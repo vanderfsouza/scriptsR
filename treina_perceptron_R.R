@@ -1,9 +1,12 @@
 #### Preceptron ####
 
-## Declaração das variáveis
+#### Declaração das variáveis ####
 X = matrix(c(0, 1, 0, 1, 0, 0, 1, 1),   # Matriz de dados
            nrow=2,ncol=4,byrow = TRUE)   
+
 yd = c(0, 0, 0, 1)                      # Saída desejada (AND) para cada coluna de X
+#yd = c(0, 1, 1, 1)                      # Saída desejada (OR) para cada coluna de X
+
 alfa = 1.2                              # Taxa de correção dos pesos
 maxep = 10                              # valor máximo de épocas de treinamento
 tol = 0.001                             # erro máximo tolerável
@@ -12,7 +15,7 @@ tol = 0.001                             # erro máximo tolerável
 (W = sample(-100:100, 2, replace=TRUE)/100)  ## Pesos
 (b = sample(-100:100, 1, replace=TRUE)/100)  ## bias
 
-## Função perceptron
+#### Função perceptron ####
 yperceptron = function(W,b,X) {
   U=W%*%X+b                             # Calcula a saída do perceptron
   y=matrix()
@@ -26,11 +29,11 @@ yperceptron = function(W,b,X) {
   return(y)
 }
 
-## Teste da percetron sem pesos e bias ajustados
+## Teste da percetron sem os pesos e o bias ajustados
 (y = yperceptron(W,b,X))               # o resultado correto seria: 0 0 0 1
 
 
-## Algoritmo de treinamento do Perceptron
+#### Algoritmo de treinamento do Perceptron ####
 treina_perceptron = function(W,b,X,yd,alfa,maxep,tol){
   N = ncol(X)                          # N = número de amostras de X
   SEQ = tol                            # SEQ(somatorio dos erros quadraticos) = tolerância estabelecida  
@@ -54,4 +57,20 @@ treina_perceptron = function(W,b,X,yd,alfa,maxep,tol){
 
 (treino=treina_perceptron(W,b,X,yd,alfa,maxep,tol)) # Mostra os valores de W, b e VetorSEQ
 
-yperceptron(treino$W,treino$b,X)  # o resultado esperado é: 0 0 0 1
+(y=yperceptron(treino$W,treino$b,X))  # o resultado esperado é: 0 0 0 1
+
+
+#### Plotar gráfico ####
+# w1*x + w2*y + b = 0
+# se x = 0 então y = -b/w2
+# se y = 0 então x = -b/w1
+# equação da reta: y = slope*x + intercept
+
+slope = -(treino$b/treino$W[2])/(treino$b/treino$W[1])  
+intercept = -treino$b/treino$W[2]
+
+x1 = seq(-1,2,0.1)
+y1 = slope*x1 + intercept
+
+plot(X[1,],X[2,],pch=y)
+lines(x1,y1)
